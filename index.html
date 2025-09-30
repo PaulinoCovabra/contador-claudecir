@@ -56,30 +56,39 @@
   </div>
 
   <script>
-    let dias = 0;
-    let record = 0;
+    function getDaysSince(dateString) {
+      const lastDate = new Date(dateString);
+      const today = new Date();
+      const diffTime = today - lastDate;
+      return Math.floor(diffTime / (1000 * 60 * 60 * 24));
+    }
 
     function atualizarDisplay() {
+      const lastReset = localStorage.getItem("lastReset");
+      let dias = 0;
+      if (lastReset) {
+        dias = getDaysSince(lastReset);
+      }
+
+      let record = parseInt(localStorage.getItem("record") || "0", 10);
+      if (dias > record) {
+        record = dias;
+        localStorage.setItem("record", record);
+      }
+
       document.getElementById("dias").textContent = dias;
       document.getElementById("record").textContent = record;
     }
 
     function resetCounter() {
-      if (dias > record) {
-        record = dias;
-      }
-      dias = 0;
+      localStorage.setItem("lastReset", new Date().toISOString());
       atualizarDisplay();
     }
 
-    // Incrementa contador a cada 24h (simulação: 1s = 1 dia)
-    setInterval(() => {
-      dias++;
-      if (dias > record) {
-        record = dias;
-      }
-      atualizarDisplay();
-    }, 1000);
+    // Inicializa ao carregar a página
+    if (!localStorage.getItem("lastReset")) {
+      localStorage.setItem("lastReset", new Date().toISOString());
+    }
 
     atualizarDisplay();
   </script>
