@@ -1,69 +1,87 @@
-import { useEffect, useState } from "react";
-import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { RefreshCw } from "lucide-react";
-import { motion } from "framer-motion";
-
-export default function ClaudecirCounter() {
-  const [dias, setDias] = useState(0);
-  const [record, setRecord] = useState(0);
-
-  // Incrementa o contador a cada 24h
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setDias((prev) => prev + 1);
-    }, 1000 * 60 * 60 * 24);
-    return () => clearInterval(interval);
-  }, []);
-
-  // Atualiza record sempre que o contador ultrapassa
-  useEffect(() => {
-    if (dias > record) {
-      setRecord(dias);
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contador Claudecir</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      background: linear-gradient(to right, #6366f1, #a855f7, #ec4899);
+      color: #333;
     }
-  }, [dias, record]);
+    .card {
+      background: #fff;
+      border-radius: 20px;
+      padding: 30px;
+      max-width: 500px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    }
+    h1 span {
+      color: #4f46e5;
+      font-weight: bold;
+    }
+    h2 span {
+      color: #16a34a;
+      font-weight: bold;
+    }
+    button {
+      margin-top: 20px;
+      background: #ef4444;
+      color: #fff;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 12px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    button:hover {
+      background: #dc2626;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Estamos a <span id="dias">0</span> dia/s sem o Claudecir perguntar sobre Combo x Bem Estar!</h1>
+    <h2>Nosso record é de <span id="record">0</span> dia/s</h2>
+    <button onclick="resetCounter()">Zerar contador</button>
+  </div>
 
-  const resetCounter = () => {
-    setDias(0);
-  };
+  <script>
+    let dias = 0;
+    let record = 0;
 
-  return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 p-6">
-      <Card className="max-w-lg w-full shadow-2xl rounded-2xl">
-        <CardContent className="p-6 space-y-6 text-center">
-          <motion.h1
-            className="text-2xl font-bold text-gray-800"
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-          >
-            Estamos a <span className="text-indigo-600">{dias}</span> dia/s sem o
-            Claudecir perguntar sobre Combo x Bem Estar!
-          </motion.h1>
+    function atualizarDisplay() {
+      document.getElementById("dias").textContent = dias;
+      document.getElementById("record").textContent = record;
+    }
 
-          <motion.h2
-            className="text-xl text-gray-700"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.3 }}
-          >
-            Nosso record é de <span className="text-green-600">{record}</span> dia/s
-          </motion.h2>
+    function resetCounter() {
+      if (dias > record) {
+        record = dias;
+      }
+      dias = 0;
+      atualizarDisplay();
+    }
 
-          <motion.div
-            initial={{ scale: 0.9, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ delay: 0.5 }}
-          >
-            <Button
-              onClick={resetCounter}
-              className="bg-red-500 hover:bg-red-600 text-white px-6 py-3 rounded-xl flex items-center gap-2 shadow-lg"
-            >
-              <RefreshCw className="w-4 h-4" /> Zerar contador
-            </Button>
-          </motion.div>
-        </CardContent>
-      </Card>
-    </div>
-  );
-}
+    // Incrementa contador a cada 24h (simulação: 1s = 1 dia)
+    setInterval(() => {
+      dias++;
+      if (dias > record) {
+        record = dias;
+      }
+      atualizarDisplay();
+    }, 1000);
+
+    atualizarDisplay();
+  </script>
+</body>
+</html>
